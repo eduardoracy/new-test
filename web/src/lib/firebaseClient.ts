@@ -10,28 +10,20 @@ import {
 import { getFirestore } from "firebase/firestore";
 
 const cfg = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    apiKey: "AIzaSyBVCUuKFF67JLiBFb2xw56eBxmRDYeQyF4",
+    authDomain: "hmb-vtc.firebaseapp.com",
+    projectId: "hmb-vtc",
+    appId: "1:748227134098:web:79c06a3eec93894e38dc4b",
+    // Add other optional config values as needed
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 } as const;
 
-const required = [
-    "NEXT_PUBLIC_FIREBASE_API_KEY",
-    "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-    "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-    "NEXT_PUBLIC_FIREBASE_APP_ID",
-] as const;
-
-const missing = required.filter((k) => !process.env[k]);
-if (missing.length) {
+// Remove the environment variable check and directly use cfg values
+if (!cfg.apiKey || !cfg.authDomain || !cfg.projectId || !cfg.appId) {
     throw new Error(
-        `Missing Firebase env vars: ${missing.join(
-            ", "
-        )}. Put them in web/.env.local (copy from Firebase Web App config).`
+        `Missing required Firebase configuration values. Check your config object.`
     );
 }
 
@@ -39,13 +31,13 @@ export const app =
     getApps().length > 0
         ? getApp()
         : initializeApp({
-            apiKey: cfg.apiKey!,
-            authDomain: cfg.authDomain!,
-            projectId: cfg.projectId!,
-            storageBucket: cfg.storageBucket, // optional
-            messagingSenderId: cfg.messagingSenderId, // optional
-            appId: cfg.appId!,
-            measurementId: cfg.measurementId, // optional
+            apiKey: cfg.apiKey,
+            authDomain: cfg.authDomain,
+            projectId: cfg.projectId,
+            storageBucket: cfg.storageBucket,
+            messagingSenderId: cfg.messagingSenderId,
+            appId: cfg.appId,
+            measurementId: cfg.measurementId,
         });
 
 export const auth = getAuth(app);
