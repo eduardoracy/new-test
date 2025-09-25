@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+    match /databases/{db}/documents {
+function isSignedIn() { return request.auth != null; }
+function me() { return request.auth.uid; }
+function userDoc(u) { return get(/databases/$(db)/documents/users/$(u)); }
+function myRoles() { return userDoc(me()).data.roles; }
+function isAdmin() { return myRoles().admin == true; }
+function isSL() { return myRoles().sectionLeader == true; }
+function sameSection(u) {
+return userDoc(me()).data.section == userDoc(u).data.section;
+}
+// Config – Admin writable, public readable for feature flags
+match /config/{doc=**} {
+allow read: if true;
+allow write: if isAdmin();
+}
+// Stations – rubric edits mutate in place, reorder, activate/deactivate
+match /stations/{stationId} {
+allow read: if true;
+allow write: if isAdmin();
+}
+// Users
+match /users/{uid} {
+allow read: if isSignedIn() && (me() == uid || isAdmin() || (isSL() &&
+sameSection(uid)));
+allow update: if isSignedIn() && (
+(me() == uid &&
+request.resource.data.diff(resource.data).changedKeys().hasOnly(['displayName']))
+||
+isAdmin()
+);
+allow create, delete: if isAdmin();
+match /progress/{stationId} {
+allow read: if isSignedIn() && (me() == uid || isAdmin() || (isSL() &&
+sameSection(uid)));
+allow write: if false; // Only via CF
+}
+}
+// Attempts – history visibility scoped to self, SL (same section), or Admin
+match /attempts/{id} {
+allow read: if isSignedIn() && (
+isAdmin() || (isSL() && sameSection(resource.data.memberUid)) || (me()
+== resource.data.memberUid)
+);
+allow write: if false; // Only via CF
+}
+// Approvals – Admin only
+match /approvals/{id} {
+allow read, write: if isAdmin();
+}
+match /imports/{imp} { allow read, write: if isAdmin(); }
+match /auditLogs/{log} { allow read: if isAdmin(); allow write: if false; }
+}
+}

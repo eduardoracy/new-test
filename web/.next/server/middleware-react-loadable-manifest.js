@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components/MagicLinkClient.tsx -> @/lib/firebaseClient\":{\"id\":\"components/MagicLinkClient.tsx -> @/lib/firebaseClient\",\"files\":[\"static/chunks/_app-pages-browser_src_lib_firebaseClient_ts.js\"]}}"

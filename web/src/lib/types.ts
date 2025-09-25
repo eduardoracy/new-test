@@ -1,0 +1,1 @@
+export type Score = "Developing" | "Proficient" | "Mastery";

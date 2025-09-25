@@ -1,0 +1,21 @@
+{
+    "name": "hmb-vtc-functions",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": "20"
+    },
+    "dependencies": {
+        "firebase-admin": "^12.5.0",
+        "firebase-functions": "^6.0.0",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "typescript": "^5.5.4"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "watch": "tsc -w",
+        "serve": "firebase emulators:start --only functions,firestore"
+    }
+}
